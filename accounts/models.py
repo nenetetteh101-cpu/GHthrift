@@ -35,6 +35,23 @@ class SocialIdentity(models.Model):
         return f"{self.get_provider_display()} · {self.user}"
 
 
+class SocialProviderSettings(models.Model):
+    provider = models.CharField(
+        max_length=20, choices=SocialIdentity.PROVIDER_CHOICES, unique=True
+    )
+    client_id = models.CharField(max_length=255, blank=True)
+    client_secret = models.CharField(max_length=255, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["provider"]
+        verbose_name = "social provider settings"
+        verbose_name_plural = "social provider settings"
+
+    def __str__(self):
+        return self.get_provider_display()
+
+
 class Address(models.Model):
     REGION_CHOICES = [
         ("greater_accra", "Greater Accra"),

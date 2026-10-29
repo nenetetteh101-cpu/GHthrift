@@ -12,12 +12,13 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 
-from .models import SocialIdentity
+from .models import SocialIdentity, SocialProviderSettings
 
 logger = logging.getLogger(__name__)
 
 PROVIDERS = {
     "google": {
+        "provider": "google",
         "label": "Google",
         "client_id_setting": "GOOGLE_CLIENT_ID",
         "client_secret_setting": "GOOGLE_CLIENT_SECRET",
@@ -28,6 +29,7 @@ PROVIDERS = {
         "auth_params": {"access_type": "online", "prompt": "select_account"},
     },
     "instagram": {
+        "provider": "instagram",
         "label": "Instagram",
         "client_id_setting": "INSTAGRAM_CLIENT_ID",
         "client_secret_setting": "INSTAGRAM_CLIENT_SECRET",
@@ -48,10 +50,20 @@ def _get_provider(provider):
 
 
 def _credentials(config):
-    return (
-        getattr(settings, config["client_id_setting"], ""),
-        getattr(settings, config["client_secret_setting"], ""),
-    )
+    client_id = getattr(settings, config["client_id_setting"], "")
+    client_secret = getattr(settings, config["client_secret_setting"], "")
+    if client_id and client_secret:
+        return client_id, client_secret
+
+    stored = SocialProviderSettings.objects.filter(
+        provider=config["provider"]
+    ).first()
+    if stored:
+        return (
+            client_id or stored.client_id,
+            client_secret or stored.client_secret,
+        )
+    return client_id, client_secret
 
 
 def _callback_url(request, provider):
@@ -67,7 +79,7 @@ def social_login(request, provider):
         messages.error(
             request,
             f"{config['label']} login is not configured yet. "
-            "Add the provider credentials to your environment.",
+            "Add the provider credentials in the Django admin or your environment.",
         )
         return redirect("accounts:login")
 

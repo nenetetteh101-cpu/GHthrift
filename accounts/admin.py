@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import Address, SocialIdentity, User
+from .models import Address, SocialIdentity, SocialProviderSettings, User
 
 
 class AddressInline(admin.TabularInline):
@@ -22,6 +22,12 @@ class SocialIdentityAdmin(admin.ModelAdmin):
     list_display = ("provider", "uid", "user", "created_at")
     list_filter = ("provider",)
     search_fields = ("uid", "user__username", "user__email")
+
+
+@admin.register(SocialProviderSettings)
+class SocialProviderSettingsAdmin(admin.ModelAdmin):
+    list_display = ("provider", "client_id", "updated_at")
+    fields = ("provider", "client_id", "client_secret")
 
 
 @admin.register(Address)
