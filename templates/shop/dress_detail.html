@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}{{ dress.title }} - GHthrift{% endblock %}
+{% block meta_description %}{{ dress.description|truncatewords:25 }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="detail-layout">
+    <div class="detail-gallery">
+      <div class="detail-main-image">
+        {% if dress.primary_image %}
+          <img src="{{ dress.primary_image.image.url }}" alt="{{ dress.primary_image.alt_text|default:dress.title }}">
+        {% else %}
+          <div class="product-placeholder">GHthrift</div>
+        {% endif %}
+      </div>
+      {% if dress.images.all|length > 1 %}
+        <div class="thumb-row">
+          {% for image in dress.images.all|slice:":4" %}
+            <div class="thumb">
+              <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:dress.title }}" loading="lazy">
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="detail-panel">
+      <span class="eyebrow">{{ dress.get_occasion_display }}</span>
+      <h1>{{ dress.title }}</h1>
+      <p class="detail-price">GH&#8373; {{ dress.price|floatformat:2 }}</p>
+
+      <div class="pill-row">
+        <span class="pill">Size {{ dress.size }}</span>
+        <span class="pill">{{ dress.get_condition_display }}</span>
+        {% if dress.color %}<span class="pill pill-warm">{{ dress.color }}</span>{% endif %}
+        {% if dress.in_stock %}<span class="pill">In stock</span>{% else %}<span class="pill pill-warm">Sold</span>{% endif %}
+      </div>
+
+      {% if dress.in_stock %}
+        <div class="detail-actions">
+          <form method="post" action="{% url 'cart:add' dress.pk %}"
+                hx-post="{% url 'cart:add' dress.pk %}" hx-target="#cart-feedback" hx-swap="innerHTML">
+            {% csrf_token %}
+            <button class="btn" type="submit">Add to cart</button>
+          </form>
+          {% if user.is_authenticated %}
+            {% include "shop/partials/wishlist_button.html" %}
+          {% else %}
+            <a class="wishlist-btn" href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">&#9825; Save to wishlist</a>
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="detail-actions">
+          <button class="btn" type="button" disabled>Sold out</button>
+          {% if user.is_authenticated %}
+            {% include "shop/partials/wishlist_button.html" %}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <dl class="spec-list">
+        <div><dt>Size</dt><dd>{{ dress.size }}</dd></div>
+        <div><dt>Colour</dt><dd>{{ dress.color|default:"-" }}</dd></div>
+        <div><dt>Style</dt><dd>{{ dress.style|default:"-" }}</dd></div>
+        <div><dt>Condition</dt><dd>{{ dress.get_condition_display }}</dd></div>
+        <div><dt>Occasion</dt><dd>{{ dress.get_occasion_display }}</dd></div>
+        <div><dt>Reference</dt><dd>GH-{{ dress.pk|stringformat:"04d" }}</dd></div>
+      </dl>
+
+      <p class="size-note">Thrift sizing varies. Compare the measurements in the description with a dress you already own. Need help? <a href="{% url 'core:contact' %}">Message us</a>.</p>
+
+      <div class="detail-description">
+        <h2>About this piece</h2>
+        <p>{{ dress.description|linebreaksbr }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if related %}
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">You may also like</span>
+          <h2>More {{ dress.get_occasion_display|lower }} finds</h2>
+        </div>
+        <a class="btn btn-secondary btn-small" href="{% url 'shop:product_list' %}?occasion={{ dress.occasion }}">See all</a>
+      </div>
+      <div class="product-grid">
+        {% for item in related %}
+          {% include "shop/partials/product_card.html" with dress=item %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}GHthrift - Curated thrift dresses in Ghana{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow">Curated thrift, Ghana-made style</span>
+      <h1>One-of-a-kind dresses, found for you.</h1>
+      <p>Affordable, sustainable thrift dresses sourced with care in Ghana. Every piece is quality-checked, measured and ready to wear.</p>
+      <div class="hero-actions">
+        <a class="btn" href="{% url 'shop:product_list' %}">Shop the collection</a>
+        <a class="btn btn-secondary" href="{% url 'core:contact' %}">How it works</a>
+      </div>
+      <div class="hero-facts">
+        <div><strong>100%</strong><span>unique pieces</span></div>
+        <div><strong>Mobile Money</strong><span>MTN &amp; Airtel</span></div>
+        <div><strong>Accra &amp; beyond</strong><span>delivery partners</span></div>
+      </div>
+    </div>
+
+    <div class="hero-collage" aria-hidden="true">
+      {% for dress in featured|slice:":3" %}
+        <a class="hero-tile hero-tile-{% cycle 'a' 'b' 'c' %}" href="{{ dress.get_absolute_url }}">
+          {% if dress.primary_image %}
+            <img src="{{ dress.primary_image.image.url }}" alt="">
+          {% endif %}
+          <span>{{ dress.title }}</span>
+        </a>
+      {% empty %}
+        <div class="hero-tile hero-tile-a"><span>Fresh finds weekly</span></div>
+        <div class="hero-tile hero-tile-b"><span>Wedding guest</span></div>
+        <div class="hero-tile hero-tile-c"><span>Everyday style</span></div>
+      {% endfor %}
+      <div class="hero-badge">New drops every week</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="chip-row">
+      <a class="chip active" href="{% url 'shop:product_list' %}">All dresses</a>
+      {% for value, label in occasions %}
+        <a class="chip" href="{% url 'shop:product_list' %}?occasion={{ value }}">{{ label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if featured %}
+  <section class="section-tight">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Editor's picks</span>
+          <h2>Featured this week</h2>
+          <p>Hand-picked pieces with standout cuts, colours and fabric.</p>
+        </div>
+        <a class="btn btn-secondary btn-small" href="{% url 'shop:product_list' %}">View all</a>
+      </div>
+      <div class="product-grid">
+        {% for dress in featured %}
+          {% include "shop/partials/product_card.html" with dress=dress %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Just landed</span>
+        <h2>New in</h2>
+        <p>The latest dresses added to the rack. When it's gone, it's gone.</p>
+      </div>
+      <a class="btn btn-secondary btn-small" href="{% url 'shop:product_list' %}">Shop all</a>
+    </div>
+    {% if latest %}
+      <div class="product-grid">
+        {% for dress in latest %}
+          {% include "shop/partials/product_card.html" with dress=dress %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>New dresses are on the way</h3>
+        <p>Check back soon, or follow us for first looks at new arrivals.</p>
+        <a class="btn" href="{% url 'core:contact' %}">Get in touch</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="value-grid">
+      <div class="value-card">
+        <h3>Quality checked</h3>
+        <p>Every dress is inspected for fabric condition, stains and size accuracy before it is listed.</p>
+      </div>
+      <div class="value-card">
+        <h3>Local payments</h3>
+        <p>Pay with MTN or Airtel Mobile Money, or a card through our secure Paystack checkout.</p>
+      </div>
+      <div class="value-card">
+        <h3>Delivered to you</h3>
+        <p>We ship with trusted partners across Accra and beyond, with tracking updates along the way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="cta-band">
+      <div>
+        <h2>Looking for something specific?</h2>
+        <p>Tell us your size, occasion and budget and we'll keep an eye out while sourcing.</p>
+      </div>
+      <a class="btn btn-light" href="{% url 'core:contact' %}">Talk to us</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

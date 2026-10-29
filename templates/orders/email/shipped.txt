@@ -1,0 +1,12 @@
+Hello {{ order.shipping_name }},
+
+Good news - your GHthrift order {{ order.reference }} has shipped.
+
+{% if tracking %}Tracking number: {{ tracking }}{% endif %}
+
+Delivering to:
+{{ order.shipping_address }}, {{ order.shipping_city }}, {{ order.get_shipping_region_display }}
+
+View your order: {{ site_url }}{% url 'orders:order_detail' order.reference %}
+
+Thank you for shopping with GHthrift.

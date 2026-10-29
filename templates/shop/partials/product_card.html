@@ -1,0 +1,30 @@
+<article class="product-card">
+  <a class="product-media" href="{{ dress.get_absolute_url }}">
+    {% if dress.primary_image %}
+      <img src="{{ dress.primary_image.image.url }}" alt="{{ dress.primary_image.alt_text|default:dress.title }}" loading="lazy">
+    {% else %}
+      <div class="product-placeholder">GHthrift</div>
+    {% endif %}
+    {% if not dress.in_stock %}
+      <span class="product-badge sold">Sold</span>
+    {% elif dress.condition == "new" %}
+      <span class="product-badge">New in</span>
+    {% elif dress.condition == "like_new" %}
+      <span class="product-badge">Like new</span>
+    {% endif %}
+  </a>
+  <div class="product-info">
+    <h3 class="product-title"><a href="{{ dress.get_absolute_url }}">{{ dress.title }}</a></h3>
+    <p class="product-meta">{{ dress.size }} &middot; {{ dress.color }} &middot; {{ dress.get_occasion_display }}</p>
+    <div class="price-row">
+      <span class="price">GH&#8373; {{ dress.price|floatformat:2 }}</span>
+      {% if dress.in_stock %}
+        <form class="add-form" method="post" action="{% url 'cart:add' dress.pk %}"
+              hx-post="{% url 'cart:add' dress.pk %}" hx-target="#cart-feedback" hx-swap="innerHTML">
+          {% csrf_token %}
+          <button class="add-btn" type="submit">Add</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</article>

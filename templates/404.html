@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found - GHthrift{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container center">
+    <span class="eyebrow">404</span>
+    <h1>This page has moved on</h1>
+    <p class="muted">The page you're looking for doesn't exist, or the dress has already found a new home.</p>
+    <a class="btn" href="{% url 'shop:product_list' %}">Browse the collection</a>
+  </div>
+</section>
+{% endblock %}

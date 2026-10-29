@@ -1,0 +1,44 @@
+<div id="product-results">
+  <div class="results-meta">
+    <span>{{ total_count }} dress{{ total_count|pluralize:"es" }}</span>
+    <span>One-of-a-kind pieces &middot; updated weekly</span>
+  </div>
+
+  {% if dresses %}
+    <div class="product-grid">
+      {% for dress in dresses %}
+        {% include "shop/partials/product_card.html" with dress=dress %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <h3>No dresses match those filters</h3>
+      <p>Try clearing a filter or browsing everything in the shop.</p>
+      <a class="btn btn-secondary btn-small" href="{% url 'shop:product_list' %}">Clear filters</a>
+    </div>
+  {% endif %}
+
+  {% if page_obj.has_other_pages %}
+    <nav class="pagination" aria-label="Product pages">
+      {% if page_obj.has_previous %}
+        <a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.previous_page_number }}"
+           hx-get="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.previous_page_number }}"
+           hx-target="#product-results" hx-swap="outerHTML" hx-push-url="true">Prev</a>
+      {% endif %}
+      {% for number in page_obj.paginator.page_range %}
+        {% if number == page_obj.number %}
+          <span class="current">{{ number }}</span>
+        {% elif number > page_obj.number|add:-3 and number < page_obj.number|add:3 %}
+          <a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ number }}"
+             hx-get="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ number }}"
+             hx-target="#product-results" hx-swap="outerHTML" hx-push-url="true">{{ number }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+        <a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.next_page_number }}"
+           hx-get="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.next_page_number }}"
+           hx-target="#product-results" hx-swap="outerHTML" hx-push-url="true">Next</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+</div>

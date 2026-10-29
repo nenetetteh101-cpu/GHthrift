@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Log in - GHthrift{% endblock %}
+
+{% block content %}
+<div class="container auth-wrap">
+  <div class="auth-card">
+    <span class="eyebrow">Welcome back</span>
+    <h1>Log in</h1>
+    <p class="lead">Access your orders, wishlist and saved addresses.</p>
+
+    {% if form.non_field_errors %}
+      <div class="form-errors">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <div class="form-grid">
+        <div class="field">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="field">
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+      </div>
+      <button class="btn btn-block" type="submit" style="margin-top:1.2rem">Log in</button>
+    </form>
+
+    <p class="auth-switch">New to GHthrift? <a href="{% url 'accounts:register' %}">Create an account</a></p>
+  </div>
+</div>
+{% endblock %}

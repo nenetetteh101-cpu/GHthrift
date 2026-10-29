@@ -1,0 +1,6 @@
+{% if error %}
+  <div class="toast toast-error">{{ error }}</div>
+{% else %}
+  <div class="toast toast-success">{{ dress.title }} added to your cart</div>
+{% endif %}
+<span id="cart-count" class="cart-count" hx-swap-oob="true">{{ cart.item_count }}</span>

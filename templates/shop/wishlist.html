@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}My wishlist - GHthrift{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Saved for later</span>
+    <h1>My wishlist</h1>
+    <p>Keep an eye on the pieces you love. Thrift is one-of-a-kind, so don't wait too long.</p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    {% if items %}
+      <div class="product-grid">
+        {% for item in items %}
+          {% include "shop/partials/product_card.html" with dress=item.dress %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>Your wishlist is empty</h3>
+        <p>Tap the heart on any dress to save it here.</p>
+        <a class="btn" href="{% url 'shop:product_list' %}">Browse dresses</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

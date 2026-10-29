@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Your cart - GHthrift{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Almost yours</span>
+    <h1>Your cart</h1>
+    <p>Review your picks before checkout. Thrift pieces are one-of-a-kind.</p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    {% include "cart/partials/cart_body.html" %}
+  </div>
+</section>
+{% endblock %}

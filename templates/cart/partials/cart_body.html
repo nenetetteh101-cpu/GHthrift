@@ -1,0 +1,61 @@
+<div id="cart-body">
+  {% if cart.items.exists %}
+    <div class="cart-layout">
+      <div class="cart-items">
+        {% for item in cart.items.all %}
+          <div class="cart-item">
+            <a class="cart-thumb" href="{{ item.dress.get_absolute_url }}">
+              {% if item.dress.primary_image %}
+                <img src="{{ item.dress.primary_image.image.url }}" alt="{{ item.dress.title }}" loading="lazy">
+              {% else %}
+                <div class="product-placeholder">GHthrift</div>
+              {% endif %}
+            </a>
+            <div>
+              <h3><a href="{{ item.dress.get_absolute_url }}">{{ item.dress.title }}</a></h3>
+              <p class="meta">Size {{ item.dress.size }} &middot; {{ item.dress.color }} &middot; {{ item.dress.get_condition_display }}</p>
+              <form class="qty-form" method="post" action="{% url 'cart:update' item.pk %}"
+                    hx-post="{% url 'cart:update' item.pk %}" hx-target="#cart-body" hx-swap="outerHTML"
+                    hx-trigger="change from:input[name='quantity']">
+                {% csrf_token %}
+                <label class="small muted" for="qty-{{ item.pk }}">Qty</label>
+                <input id="qty-{{ item.pk }}" class="field-input qty-input" type="number" name="quantity"
+                       value="{{ item.quantity }}" min="1" max="{{ item.dress.stock }}">
+                <span class="small muted">GH&#8373; {{ item.line_total|floatformat:2 }}</span>
+              </form>
+            </div>
+            <div class="cart-item-actions">
+              <span class="price">GH&#8373; {{ item.dress.price|floatformat:2 }}</span>
+              <form method="post" action="{% url 'cart:remove' item.pk %}"
+                    hx-post="{% url 'cart:remove' item.pk %}" hx-target="#cart-body" hx-swap="outerHTML">
+                {% csrf_token %}
+                <button class="remove-btn" type="submit">Remove</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <aside class="summary-card">
+        <h2>Order summary</h2>
+        <div class="summary-row"><span>Subtotal ({{ cart.item_count }} item{{ cart.item_count|pluralize }})</span><span>GH&#8373; {{ cart.subtotal|floatformat:2 }}</span></div>
+        <div class="summary-row"><span>Delivery</span><span>Calculated at checkout</span></div>
+        <div class="summary-row total"><span>Total</span><span>GH&#8373; {{ cart.subtotal|floatformat:2 }}</span></div>
+        <a class="btn btn-block" href="{% url 'orders:checkout' %}">Checkout</a>
+        <a class="btn btn-secondary btn-block" href="{% url 'shop:product_list' %}">Continue shopping</a>
+        <ul class="trust-list">
+          <li>Secure payment via Paystack</li>
+          <li>7-day returns on unused items</li>
+          <li>Tracked delivery in Ghana</li>
+        </ul>
+      </aside>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <h3>Your cart is empty</h3>
+      <p>Browse the collection and add a piece you love.</p>
+      <a class="btn" href="{% url 'shop:product_list' %}">Shop dresses</a>
+    </div>
+  {% endif %}
+  {% if htmx %}<span id="cart-count" class="cart-count" hx-swap-oob="true">{{ cart.item_count }}</span>{% endif %}
+</div>

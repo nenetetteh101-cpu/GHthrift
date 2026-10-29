@@ -1,0 +1,22 @@
+[Unit]
+Description=GHthrift Django app (Gunicorn)
+After=network.target
+
+[Service]
+User=ghthrift
+Group=www-data
+WorkingDirectory=/var/www/ghthrift
+EnvironmentFile=/var/www/ghthrift/.env
+ExecStart=/var/www/ghthrift/venv/bin/gunicorn config.wsgi:application \
+    --bind unix:/run/ghthrift/gunicorn.sock \
+    --workers 3 \
+    --timeout 60 \
+    --access-logfile - \
+    --error-logfile -
+RuntimeDirectory=ghthrift
+RuntimeDirectoryMode=0755
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

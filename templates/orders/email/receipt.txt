@@ -1,0 +1,28 @@
+Hello {{ order.shipping_name }},
+
+Thank you for shopping with GHthrift. We have received your payment and your order is confirmed.
+
+Order: {{ order.reference }}
+Status: {{ order.get_status_display }}
+
+Items:
+{% for item in order.items.all %}- {{ item.quantity }} x {{ item.title }} (size {{ item.size }}) - GHS {{ item.line_total|floatformat:2 }}
+{% endfor %}
+Subtotal: GHS {{ order.subtotal|floatformat:2 }}
+Delivery: GHS {{ order.delivery_fee|floatformat:2 }}
+Total: GHS {{ order.total_price|floatformat:2 }}
+
+Delivering to:
+{{ order.shipping_name }}
+{{ order.shipping_phone }}
+{{ order.shipping_address }}
+{{ order.shipping_city }}, {{ order.get_shipping_region_display }}
+
+You can view your order here: {{ site_url }}{% url 'orders:order_detail' order.reference %}
+
+Returns: items can be returned within 7 days of delivery if unworn, unwashed and with original tags.
+
+Questions? Reply to this email or contact us through the website.
+
+GHthrift
+Curated thrift dresses, sourced in Ghana.

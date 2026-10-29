@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Pay for order {{ order.reference }} - GHthrift{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="payment-box">
+      <span class="eyebrow">Order {{ order.reference }}</span>
+      <h1>Complete your payment</h1>
+      <p class="muted">Complete payment to secure these one-of-a-kind pieces.</p>
+
+      <p class="payment-amount">GH&#8373; {{ order.total_price|floatformat:2 }}</p>
+      <span class="payment-method">{{ order.get_payment_method_display }}</span>
+
+      <div class="note">
+        <p><strong>Delivering to</strong><br>
+        {{ order.shipping_name }} &middot; {{ order.shipping_phone }}<br>
+        {{ order.shipping_address }}, {{ order.shipping_city }}, {{ order.get_shipping_region_display }}</p>
+        <p style="margin:0">{{ order.items.count }} item{{ order.items.count|pluralize }} &middot; Delivery GH&#8373; {{ order.delivery_fee|floatformat:2 }}</p>
+      </div>
+
+      <form method="post" style="margin-top:1.2rem">
+        {% csrf_token %}
+        {% if order.payment_method == "pay_on_delivery" %}
+          <button class="btn btn-block" type="submit">Confirm order - pay on delivery</button>
+        {% else %}
+          <button class="btn btn-block" type="submit">Pay GH&#8373; {{ order.total_price|floatformat:2 }}</button>
+        {% endif %}
+      </form>
+
+      {% if order.payment_method != "pay_on_delivery" and allow_mock and not paystack_configured %}
+        <p class="help-text" style="margin-top:1rem">Sandbox mode: Paystack keys are not configured, so this payment will be approved automatically.</p>
+      {% elif order.payment_method != "pay_on_delivery" and not paystack_configured %}
+        <p class="help-text" style="margin-top:1rem">Online payment is not configured. Please choose pay on delivery or contact us.</p>
+      {% endif %}
+
+      <p class="small muted" style="margin-top:1.2rem"><a href="{% url 'orders:order_detail' order.reference %}">View order details</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

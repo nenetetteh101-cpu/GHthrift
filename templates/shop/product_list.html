@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Shop thrift dresses - GHthrift{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">The collection</span>
+    <h1>Shop all dresses</h1>
+    <p>Curated thrift finds sourced in Ghana. Every piece is checked, measured and photographed before it goes live.</p>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="chip-row">
+      <a class="chip {% if not request.GET.occasion %}active{% endif %}" href="{% url 'shop:product_list' %}">All occasions</a>
+      {% for value, label in form.fields.occasion.choices %}
+        {% if value %}
+          <a class="chip {% if request.GET.occasion == value %}active{% endif %}" href="?occasion={{ value }}">{{ label }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="shop-layout">
+      <form class="filters" method="get" action="{% url 'shop:product_list' %}"
+            hx-get="{% url 'shop:product_list' %}" hx-target="#product-results" hx-swap="outerHTML"
+            hx-trigger="change, keyup changed delay:350ms from:input[name='q']"
+            hx-push-url="true" hx-indicator="#filter-loading">
+        <h2>Filter</h2>
+
+        {% if form.errors %}
+          <div class="form-errors">{{ form.errors }}</div>
+        {% endif %}
+
+        <div class="filter-grid">
+          <div class="field">
+            <label for="{{ form.q.id_for_label }}">{{ form.q.label }}</label>
+            {{ form.q }}
+          </div>
+          <div class="field">
+            <label for="{{ form.size.id_for_label }}">Size</label>
+            {{ form.size }}
+          </div>
+          <div class="field">
+            <label for="{{ form.occasion.id_for_label }}">Occasion</label>
+            {{ form.occasion }}
+          </div>
+          <div class="field">
+            <label for="{{ form.color.id_for_label }}">{{ form.color.label }}</label>
+            {{ form.color }}
+          </div>
+          <div class="field">
+            <label>Price range (GHS)</label>
+            <div class="price-fields">
+              {{ form.min_price }}
+              {{ form.max_price }}
+            </div>
+          </div>
+          <div class="field">
+            <label for="{{ form.sort.id_for_label }}">Sort by</label>
+            {{ form.sort }}
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn btn-small btn-block" type="submit">Apply filters</button>
+          <a class="link-reset" href="{% url 'shop:product_list' %}">Reset</a>
+        </div>
+        <p id="filter-loading" class="htmx-indicator small muted">Updating results...</p>
+      </form>
+
+      <div>
+        {% include "shop/partials/product_results.html" %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - GHthrift{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="form-page">
+    <div class="form-card">
+      <span class="eyebrow">Delivery details</span>
+      <h1>Checkout</h1>
+      <p class="muted">We deliver across Ghana. Enter the details for the person receiving the order.</p>
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-grid two-col">
+            <div class="field">
+              <label for="{{ form.full_name.id_for_label }}">{{ form.full_name.label }}</label>
+              {{ form.full_name }}
+              {{ form.full_name.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+              {{ form.phone }}
+              {{ form.phone.errors }}
+            </div>
+          </div>
+          <div class="field">
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+          </div>
+          <div class="field">
+            <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+            {{ form.address }}
+            {{ form.address.errors }}
+          </div>
+          <div class="form-grid two-col">
+            <div class="field">
+              <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+              {{ form.city }}
+              {{ form.city.errors }}
+            </div>
+            <div class="field">
+              <label for="{{ form.region.id_for_label }}">{{ form.region.label }}</label>
+              {{ form.region }}
+              {{ form.region.errors }}
+            </div>
+          </div>
+          <div class="field">
+            <label for="{{ form.payment_method.id_for_label }}">{{ form.payment_method.label }}</label>
+            {{ form.payment_method }}
+            {{ form.payment_method.errors }}
+            <p class="help-text">Mobile Money and card payments are processed securely by Paystack.</p>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn" type="submit">Continue to payment</button>
+          <a class="btn btn-secondary" href="{% url 'cart:cart_detail' %}">Back to cart</a>
+        </div>
+      </form>
+    </div>
+
+    <aside class="summary-card">
+      <h2>Your order</h2>
+      {% for item in cart.items.all %}
+        <div class="summary-row">
+          <span>{{ item.quantity }} &times; {{ item.dress.title }} <span class="small muted">({{ item.dress.size }})</span></span>
+          <span>GH&#8373; {{ item.line_total|floatformat:2 }}</span>
+        </div>
+      {% endfor %}
+      <div class="summary-row"><span>Subtotal</span><span>GH&#8373; {{ cart.subtotal|floatformat:2 }}</span></div>
+      <div class="summary-row"><span>Delivery</span><span>GH&#8373; {{ delivery_fee|floatformat:2 }}</span></div>
+      <div class="summary-row total"><span>Total</span><span>GH&#8373; {{ total|floatformat:2 }}</span></div>
+      <ul class="trust-list">
+        <li>Pay with MTN or Airtel Mobile Money</li>
+        <li>Cards accepted via Paystack</li>
+        <li>7-day return window</li>
+      </ul>
+    </aside>
+  </div>
+</div>
+{% endblock %}

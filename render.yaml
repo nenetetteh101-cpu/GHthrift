@@ -1,0 +1,77 @@
+# Render Blueprint for GHthrift.
+# Deploy with: Render Dashboard -> New -> Blueprint -> select this repo.
+#
+# Notes:
+# - The disk below requires a paid web service (Starter or higher). If you prefer
+#   free hosting, remove the disk block and configure S3 media storage instead
+#   (AWS_* variables), otherwise uploaded photos are lost on each deploy.
+# - Add your Paystack and email credentials in the Render dashboard. Variables
+#   marked sync: false are intentionally left blank.
+
+databases:
+  - name: ghthrift-db
+    databaseName: ghthrift
+    user: ghthrift
+    plan: free
+    region: frankfurt
+
+services:
+  - type: web
+    name: ghthrift
+    runtime: python
+    plan: starter
+    region: frankfurt
+    branch: main
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 60 --access-logfile -"
+    healthCheckPath: /healthz/
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.5"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "localhost,127.0.0.1"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ghthrift-db
+          property: connectionString
+      - key: DB_SSL_REQUIRE
+        value: "False"
+      - key: MEDIA_ROOT
+        value: /var/data/media
+      - key: PAYSTACK_ALLOW_MOCK
+        value: "False"
+      - key: DELIVERY_FEE
+        value: "30.00"
+      - key: SITE_URL
+        sync: false
+      - key: PAYSTACK_PUBLIC_KEY
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        sync: false
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: EMAIL_USE_TLS
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+    disk:
+      name: ghthrift-media
+      mountPath: /var/data
+      sizeGB: 5

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ order.reference }} - GHthrift{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+  <div class="container">
+    <div class="order-detail-head">
+      <div>
+        <span class="eyebrow">Order {{ order.reference }}</span>
+        <h1>{{ order.get_status_display }}</h1>
+        <p class="muted">Placed {{ order.created_at|date:"j M Y, g:i a" }} &middot; {{ order.get_payment_method_display }}</p>
+      </div>
+      <div style="text-align:right">
+        <span class="status status-{{ order.status }}">{{ order.get_status_display }}</span>
+        <p class="price" style="font-size:1.4rem;margin:0.4rem 0 0">GH&#8373; {{ order.total_price|floatformat:2 }}</p>
+      </div>
+    </div>
+
+    <div class="stepper" aria-label="Order progress">
+      <div class="step done">Order placed</div>
+      <div class="step {% if order.is_paid %}done{% endif %}">Payment</div>
+      <div class="step {% if order.status == 'shipped' or order.status == 'delivered' %}done{% endif %}">Shipped</div>
+      <div class="step {% if order.status == 'delivered' %}done{% endif %}">Delivered</div>
+    </div>
+
+    {% if not order.is_paid and order.status == 'pending' %}
+      {% if order.payment_method == 'pay_on_delivery' %}
+        <div class="callout">
+          <p style="margin:0"><strong>Pay on delivery.</strong> Keep GH&#8373; {{ order.total_price|floatformat:2 }} ready when your order arrives.</p>
+        </div>
+      {% else %}
+        <div class="callout">
+          <p style="margin:0 0 0.6rem"><strong>Payment pending.</strong> Complete payment to confirm your order.</p>
+          <a class="btn btn-small" href="{% url 'orders:payment' order.reference %}">Complete payment</a>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <div class="form-card" style="margin-top:1.2rem">
+      <h2>Items</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th>Item</th><th>Size</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all %}
+            <tr>
+              <td>
+                {% if item.dress %}
+                  <a href="{{ item.dress.get_absolute_url }}">{{ item.title }}</a>
+                {% else %}
+                  {{ item.title }}
+                {% endif %}
+              </td>
+              <td>{{ item.size|default:"-" }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>GH&#8373; {{ item.unit_price|floatformat:2 }}</td>
+              <td>GH&#8373; {{ item.line_total|floatformat:2 }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr><td colspan="4">Subtotal</td><td>GH&#8373; {{ order.subtotal|floatformat:2 }}</td></tr>
+          <tr><td colspan="4">Delivery</td><td>GH&#8373; {{ order.delivery_fee|floatformat:2 }}</td></tr>
+          <tr><td colspan="4">Total</td><td>GH&#8373; {{ order.total_price|floatformat:2 }}</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="info-grid" style="margin-top:1.2rem">
+      <div class="form-card">
+        <h3>Delivery address</h3>
+        <p>{{ order.shipping_name }}<br>
+        {{ order.shipping_phone }}<br>
+        {{ order.shipping_address }}<br>
+        {{ order.shipping_city }}, {{ order.get_shipping_region_display }}</p>
+        {% if order.delivery %}
+          <h3 style="margin-top:1rem">Tracking</h3>
+          <p>{{ order.delivery.partner_name|default:"Partner to be assigned" }}{% if order.delivery.tracking_number %}<br>Tracking no: <strong>{{ order.delivery.tracking_number }}</strong>{% endif %}</p>
+        {% endif %}
+      </div>
+      <div class="form-card">
+        <h3>Payment</h3>
+        {% with payment=order.payments.first %}
+          {% if payment %}
+            <p>{{ payment.get_provider_display }}<br>
+            Status: <strong>{{ payment.get_status_display }}</strong>
+            {% if payment.provider_ref %}<br>Reference: {{ payment.provider_ref }}{% endif %}</p>
+          {% else %}
+            <p>No payment recorded yet.</p>
+          {% endif %}
+        {% endwith %}
+        <p class="small muted">Need help with this order? <a href="{% url 'core:contact' %}">Contact us</a>.</p>
+      </div>
+    </div>
+
+    <div class="detail-actions">
+      <a class="btn btn-secondary btn-small" href="{% url 'orders:order_list' %}">Back to orders</a>
+      <a class="btn btn-secondary btn-small" href="{% url 'shop:product_list' %}">Continue shopping</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
