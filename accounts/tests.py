@@ -49,3 +49,15 @@ class AccountViewsTests(TestCase):
         self.assertRedirects(response, reverse("core:home"))
         response = self.client.post(reverse("accounts:logout"))
         self.assertRedirects(response, reverse("core:home"))
+
+    def test_login_with_email_address(self):
+        User.objects.create_user(
+            username="esi",
+            email="esi@example.com",
+            password="A-strong-pass-12345",
+        )
+        response = self.client.post(
+            reverse("accounts:login"),
+            {"username": "esi@example.com", "password": "A-strong-pass-12345"},
+        )
+        self.assertRedirects(response, reverse("core:home"))

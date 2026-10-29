@@ -10,6 +10,31 @@ class User(AbstractUser):
         return self.get_full_name() or self.username
 
 
+class SocialIdentity(models.Model):
+    PROVIDER_CHOICES = [
+        ("google", "Google"),
+        ("instagram", "Instagram"),
+    ]
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="social_identities"
+    )
+    provider = models.CharField(max_length=20, choices=PROVIDER_CHOICES)
+    uid = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["provider"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["provider", "uid"], name="unique_social_identity"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.get_provider_display()} · {self.user}"
+
+
 class Address(models.Model):
     REGION_CHOICES = [
         ("greater_accra", "Greater Accra"),

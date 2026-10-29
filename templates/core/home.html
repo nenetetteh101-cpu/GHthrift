@@ -3,52 +3,6 @@
 {% block title %}GHthrift - Curated thrift dresses in Ghana{% endblock %}
 
 {% block content %}
-<section class="hero">
-  <div class="container hero-inner">
-    <div class="hero-copy">
-      <span class="eyebrow">Curated thrift, Ghana-made style</span>
-      <h1>One-of-a-kind dresses, found for you.</h1>
-      <p>Affordable, sustainable thrift dresses sourced with care in Ghana. Every piece is quality-checked, measured and ready to wear.</p>
-      <div class="hero-actions">
-        <a class="btn" href="{% url 'shop:product_list' %}">Shop the collection</a>
-        <a class="btn btn-secondary" href="{% url 'core:contact' %}">How it works</a>
-      </div>
-      <div class="hero-facts">
-        <div><strong>100%</strong><span>unique pieces</span></div>
-        <div><strong>Mobile Money</strong><span>MTN &amp; Airtel</span></div>
-        <div><strong>Accra &amp; beyond</strong><span>delivery partners</span></div>
-      </div>
-    </div>
-
-    <div class="hero-collage" aria-hidden="true">
-      {% for dress in featured|slice:":3" %}
-        <a class="hero-tile hero-tile-{% cycle 'a' 'b' 'c' %}" href="{{ dress.get_absolute_url }}">
-          {% if dress.primary_image %}
-            <img src="{{ dress.primary_image.image.url }}" alt="">
-          {% endif %}
-          <span>{{ dress.title }}</span>
-        </a>
-      {% empty %}
-        <div class="hero-tile hero-tile-a"><span>Fresh finds weekly</span></div>
-        <div class="hero-tile hero-tile-b"><span>Wedding guest</span></div>
-        <div class="hero-tile hero-tile-c"><span>Everyday style</span></div>
-      {% endfor %}
-      <div class="hero-badge">New drops every week</div>
-    </div>
-  </div>
-</section>
-
-<section class="section-tight">
-  <div class="container">
-    <div class="chip-row">
-      <a class="chip active" href="{% url 'shop:product_list' %}">All dresses</a>
-      {% for value, label in occasions %}
-        <a class="chip" href="{% url 'shop:product_list' %}?occasion={{ value }}">{{ label }}</a>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
 {% if featured %}
   <section class="section-tight">
     <div class="container">

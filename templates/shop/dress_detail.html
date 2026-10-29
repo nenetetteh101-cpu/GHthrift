@@ -47,7 +47,7 @@
           {% if user.is_authenticated %}
             {% include "shop/partials/wishlist_button.html" %}
           {% else %}
-            <a class="wishlist-btn" href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">&#9825; Save to wishlist</a>
+            <a class="btn btn-small wishlist-btn" href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">&#9825; Save to wishlist</a>
           {% endif %}
         </div>
       {% else %}

@@ -3,76 +3,80 @@
 {% block title %}Shop thrift dresses - GHthrift{% endblock %}
 
 {% block content %}
-<section class="page-head">
-  <div class="container">
-    <span class="eyebrow">The collection</span>
-    <h1>Shop all dresses</h1>
-    <p>Curated thrift finds sourced in Ghana. Every piece is checked, measured and photographed before it goes live.</p>
-  </div>
-</section>
-
 <section class="section-tight">
   <div class="container">
-    <div class="chip-row">
-      <a class="chip {% if not request.GET.occasion %}active{% endif %}" href="{% url 'shop:product_list' %}">All occasions</a>
-      {% for value, label in form.fields.occasion.choices %}
-        {% if value %}
-          <a class="chip {% if request.GET.occasion == value %}active{% endif %}" href="?occasion={{ value }}">{{ label }}</a>
+    <form class="shop-search" method="get" action="{% url 'shop:product_list' %}"
+          hx-get="{% url 'shop:product_list' %}" hx-target="#product-results" hx-swap="outerHTML"
+          hx-trigger="submit, keyup changed delay:350ms from:input[name='q']"
+          hx-push-url="true" hx-indicator="#filter-loading">
+      {% for field in form %}
+        {% if field.name != "q" and field.value %}
+          {{ field.as_hidden }}
         {% endif %}
       {% endfor %}
-    </div>
 
-    <div class="shop-layout">
-      <form class="filters" method="get" action="{% url 'shop:product_list' %}"
-            hx-get="{% url 'shop:product_list' %}" hx-target="#product-results" hx-swap="outerHTML"
-            hx-trigger="change, keyup changed delay:350ms from:input[name='q']"
-            hx-push-url="true" hx-indicator="#filter-loading">
-        <h2>Filter</h2>
+      <div class="grid" aria-hidden="true"></div>
 
-        {% if form.errors %}
-          <div class="form-errors">{{ form.errors }}</div>
-        {% endif %}
+      <div id="poda">
+        <div class="glow" aria-hidden="true"></div>
+        <div class="darkBorderBg" aria-hidden="true"></div>
+        <div class="darkBorderBg" aria-hidden="true"></div>
+        <div class="darkBorderBg" aria-hidden="true"></div>
+        <div class="white" aria-hidden="true"></div>
+        <div class="border" aria-hidden="true"></div>
 
-        <div class="filter-grid">
-          <div class="field">
-            <label for="{{ form.q.id_for_label }}">{{ form.q.label }}</label>
-            {{ form.q }}
-          </div>
-          <div class="field">
-            <label for="{{ form.size.id_for_label }}">Size</label>
-            {{ form.size }}
-          </div>
-          <div class="field">
-            <label for="{{ form.occasion.id_for_label }}">Occasion</label>
-            {{ form.occasion }}
-          </div>
-          <div class="field">
-            <label for="{{ form.color.id_for_label }}">{{ form.color.label }}</label>
-            {{ form.color }}
-          </div>
-          <div class="field">
-            <label>Price range (GHS)</label>
-            <div class="price-fields">
-              {{ form.min_price }}
-              {{ form.max_price }}
-            </div>
-          </div>
-          <div class="field">
-            <label for="{{ form.sort.id_for_label }}">Sort by</label>
-            {{ form.sort }}
-          </div>
+        <div id="main">
+          <input
+            id="{{ form.q.id_for_label }}"
+            type="search"
+            name="q"
+            value="{{ form.q.value|default:'' }}"
+            placeholder="Search dresses, colours, styles..."
+            class="input"
+            autocomplete="off"
+          />
+          <div id="input-mask" aria-hidden="true"></div>
+          <div id="pink-mask" aria-hidden="true"></div>
+          <div class="filterBorder" aria-hidden="true"></div>
+          <button type="submit" id="filter-icon" aria-label="Search">
+            <svg preserveAspectRatio="none" height="27" width="27" viewBox="4.8 4.56 14.832 15.408" fill="none" aria-hidden="true">
+              <path
+                d="M8.16 6.65002H15.83C16.47 6.65002 16.99 7.17002 16.99 7.81002V9.09002C16.99 9.56002 16.7 10.14 16.41 10.43L13.91 12.64C13.56 12.93 13.33 13.51 13.33 13.98V16.48C13.33 16.83 13.1 17.29 12.81 17.47L12 17.98C11.24 18.45 10.2 17.92 10.2 16.99V13.91C10.2 13.5 9.97 12.98 9.73 12.69L7.52 10.36C7.23 10.08 7 9.55002 7 9.20002V7.87002C7 7.17002 7.52 6.65002 8.16 6.65002Z"
+                stroke="#e5f0ff"
+                stroke-width="1"
+                stroke-miterlimit="10"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </button>
+          <button type="submit" id="search-icon" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" height="28" fill="none" aria-hidden="true">
+              <circle stroke="url(#search)" r="8" cy="11" cx="11"></circle>
+              <line stroke="url(#searchl)" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+              <defs>
+                <linearGradient gradientTransform="rotate(50)" id="search">
+                  <stop stop-color="#f1ba0a" offset="0%"></stop>
+                  <stop stop-color="#e5f0ff" offset="50%"></stop>
+                </linearGradient>
+                <linearGradient id="searchl">
+                  <stop stop-color="#e5f0ff" offset="0%"></stop>
+                  <stop stop-color="#f1ba0a" offset="50%"></stop>
+                </linearGradient>
+              </defs>
+            </svg>
+          </button>
         </div>
-
-        <div class="filter-actions">
-          <button class="btn btn-small btn-block" type="submit">Apply filters</button>
-          <a class="link-reset" href="{% url 'shop:product_list' %}">Reset</a>
-        </div>
-        <p id="filter-loading" class="htmx-indicator small muted">Updating results...</p>
-      </form>
-
-      <div>
-        {% include "shop/partials/product_results.html" %}
       </div>
+
+      {% if form.errors %}
+        <div class="form-errors">{{ form.errors }}</div>
+      {% endif %}
+      <p id="filter-loading" class="htmx-indicator small muted">Searching...</p>
+    </form>
+
+    <div>
+      {% include "shop/partials/product_results.html" %}
     </div>
   </div>
 </section>

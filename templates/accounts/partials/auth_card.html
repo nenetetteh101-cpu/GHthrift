@@ -1,0 +1,120 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <input
+      type="checkbox"
+      id="reg-toggle"
+      class="reg-toggle"
+      {% if mode == "signup" %}checked{% endif %}
+      style="display: none;"
+    />
+
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+    <div class="dark-overlay"></div>
+
+    <div class="view-container">
+      <div class="form-view" id="login-view">
+        <div class="header">
+          <div class="decorative-dot"></div>
+          <div class="title">Welcome Back</div>
+          <p class="subtitle">Please enter your details to sign in.</p>
+        </div>
+
+        {% if mode == "login" and login_form.non_field_errors %}
+          <div class="auth-alert">{{ login_form.non_field_errors }}</div>
+        {% endif %}
+
+        <form method="post" action="{% url 'accounts:login' %}" novalidate>
+          {% csrf_token %}
+          {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+          <div class="input-group">
+            {{ login_form.username }}
+            {% if login_form.username.errors %}<div class="auth-field-error">{{ login_form.username.errors }}</div>{% endif %}
+          </div>
+
+          <div class="input-group">
+            {{ login_form.password }}
+            {% if login_form.password.errors %}<div class="auth-field-error">{{ login_form.password.errors }}</div>{% endif %}
+          </div>
+
+          <a href="mailto:hello@ghthrift.com?subject=Password%20reset%20request" class="forgot-link">Forgot password?</a>
+
+          <button type="submit" class="btn-submit">Sign In</button>
+        </form>
+
+        {% include "accounts/partials/social_buttons.html" %}
+
+        <div class="signup-prompt">
+          Don't have an account?
+          <label for="reg-toggle" class="toggle-link">Sign up</label>
+        </div>
+      </div>
+
+      <div class="form-view" id="signup-view">
+        <div class="header">
+          <div class="decorative-dot"></div>
+          <div class="title">Create Account</div>
+          <p class="subtitle">Join us to get started.</p>
+        </div>
+
+        {% if mode == "signup" and register_form.non_field_errors %}
+          <div class="auth-alert">{{ register_form.non_field_errors }}</div>
+        {% endif %}
+
+        <form method="post" action="{% url 'accounts:register' %}" novalidate>
+          {% csrf_token %}
+
+          <div class="auth-name-row">
+            <div class="input-group">
+              {{ register_form.first_name }}
+              {% if register_form.first_name.errors %}<div class="auth-field-error">{{ register_form.first_name.errors }}</div>{% endif %}
+            </div>
+            <div class="input-group">
+              {{ register_form.last_name }}
+              {% if register_form.last_name.errors %}<div class="auth-field-error">{{ register_form.last_name.errors }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="input-group">
+            {{ register_form.username }}
+            {% if register_form.username.errors %}<div class="auth-field-error">{{ register_form.username.errors }}</div>{% endif %}
+          </div>
+
+          <div class="input-group">
+            {{ register_form.email }}
+            {% if register_form.email.errors %}<div class="auth-field-error">{{ register_form.email.errors }}</div>{% endif %}
+          </div>
+
+          <div class="input-group">
+            {{ register_form.phone }}
+            {% if register_form.phone.errors %}<div class="auth-field-error">{{ register_form.phone.errors }}</div>{% endif %}
+          </div>
+
+          <div class="input-group">
+            {{ register_form.password1 }}
+            {% if register_form.password1.errors %}<div class="auth-field-error">{{ register_form.password1.errors }}</div>{% endif %}
+          </div>
+
+          <div class="input-group">
+            {{ register_form.password2 }}
+            {% if register_form.password2.errors %}<div class="auth-field-error">{{ register_form.password2.errors }}</div>{% endif %}
+          </div>
+
+          {% if register_form.password1.help_text %}
+            <div class="auth-hint">{{ register_form.password1.help_text|safe }}</div>
+          {% endif %}
+
+          <button type="submit" class="btn-submit">Sign Up</button>
+        </form>
+
+        {% include "accounts/partials/social_buttons.html" %}
+
+        <div class="signup-prompt">
+          Already have an account?
+          <label for="reg-toggle" class="toggle-link">Sign in</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

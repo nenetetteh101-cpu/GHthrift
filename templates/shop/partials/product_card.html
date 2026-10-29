@@ -22,7 +22,7 @@
         <form class="add-form" method="post" action="{% url 'cart:add' dress.pk %}"
               hx-post="{% url 'cart:add' dress.pk %}" hx-target="#cart-feedback" hx-swap="innerHTML">
           {% csrf_token %}
-          <button class="add-btn" type="submit">Add</button>
+          <button class="btn btn-small add-btn" type="submit">Add</button>
         </form>
       {% endif %}
     </div>

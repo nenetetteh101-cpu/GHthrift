@@ -5,7 +5,7 @@
   </div>
 
   {% if dresses %}
-    <div class="product-grid">
+    <div class="product-grid product-grid--asymmetric">
       {% for dress in dresses %}
         {% include "shop/partials/product_card.html" with dress=dress %}
       {% endfor %}

@@ -1,5 +1,5 @@
 <button id="wishlist-button" type="button"
-        class="wishlist-btn {% if is_wishlisted %}saved{% endif %}"
+        class="btn btn-small wishlist-btn {% if is_wishlisted %}saved{% endif %}"
         hx-post="{% url 'shop:toggle_wishlist' dress.pk %}"
         hx-target="#wishlist-button" hx-swap="outerHTML">
   {% if is_wishlisted %}&hearts; Saved{% else %}&#9825; Save to wishlist{% endif %}
