@@ -317,6 +317,14 @@ DB_SSL_REQUIRE=False
 
 MEDIA_ROOT=/var/data/media
 
+# Cloudflare R2 media storage (recommended in production)
+CLOUDFLARE_R2_BUCKET=ghthrift-media
+CLOUDFLARE_R2_ENDPOINT_URL=https://<account-id>.r2.cloudflarestorage.com
+CLOUDFLARE_R2_ACCESS_KEY_ID=
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=
+CLOUDFLARE_R2_CUSTOM_DOMAIN=media.your-domain.com
+CLOUDFLARE_R2_MEDIA_LOCATION=media
+
 PAYSTACK_PUBLIC_KEY=
 PAYSTACK_SECRET_KEY=
 PAYSTACK_CURRENCY=GHS
@@ -330,7 +338,7 @@ EMAIL_HOST_PASSWORD=
 EMAIL_USE_TLS=True
 DEFAULT_FROM_EMAIL=orders@ghthrift.com
 
-# Optional S3-compatible media storage
+# Optional generic S3-compatible media storage (ignored when R2 is configured)
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_STORAGE_BUCKET_NAME=
@@ -361,9 +369,13 @@ PostgreSQL through `DATABASE_URL`, and environment-driven settings.
    the `DJANGO_SUPERUSER_*` values for the first admin.
 4. Deploy. `build.sh` installs dependencies, collects static files, migrates the
    database, and creates the admin if the superuser variables are set.
-5. Health checks use `/healthz/`. The disk keeps uploaded photos; if you are on a
-   plan without disks, remove the disk block and configure the `AWS_*` variables
-   for persistent S3 media storage instead.
+5. Health checks use `/healthz/`. The disk keeps uploaded photos by default.
+   To push uploads to Cloudflare R2 instead, create an R2 bucket, an R2 API
+   token, and a public custom domain (or r2.dev URL) for the bucket, then set
+   `CLOUDFLARE_R2_BUCKET`, `CLOUDFLARE_R2_ENDPOINT_URL`,
+   `CLOUDFLARE_R2_ACCESS_KEY_ID`, `CLOUDFLARE_R2_SECRET_ACCESS_KEY`, and
+   `CLOUDFLARE_R2_CUSTOM_DOMAIN` in the dashboard. You can then remove the disk
+   block. The older `AWS_*` variables still work for generic S3 storage.
 6. Add your custom domain in Render, then set `DJANGO_ALLOWED_HOSTS` to include
    it and `DJANGO_CSRF_TRUSTED_ORIGINS=https://your-domain.com`.
 

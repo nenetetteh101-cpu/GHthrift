@@ -164,8 +164,23 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
 
+# Cloudflare R2 is S3-compatible and is the preferred media backend. Set
+# CLOUDFLARE_R2_BUCKET and CLOUDFLARE_R2_ENDPOINT_URL to enable it. Uploaded
+# images are pushed straight to R2 and served from the bucket's public URL.
+CLOUDFLARE_R2_BUCKET = os.getenv("CLOUDFLARE_R2_BUCKET", "")
+CLOUDFLARE_R2_ENDPOINT_URL = os.getenv("CLOUDFLARE_R2_ENDPOINT_URL", "")
+CLOUDFLARE_R2_CUSTOM_DOMAIN = (
+    os.getenv("CLOUDFLARE_R2_CUSTOM_DOMAIN", "")
+    .removeprefix("https://")
+    .removeprefix("http://")
+    .rstrip("/")
+)
+USE_R2 = bool(CLOUDFLARE_R2_BUCKET and CLOUDFLARE_R2_ENDPOINT_URL)
+
+# Optional generic S3-compatible storage. Ignored when R2 is configured.
 AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME", "")
-USE_S3 = bool(AWS_STORAGE_BUCKET_NAME)
+USE_S3 = bool(AWS_STORAGE_BUCKET_NAME) and not USE_R2
+USE_REMOTE_MEDIA = USE_R2 or USE_S3
 
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
@@ -174,7 +189,29 @@ STORAGES = {
     },
 }
 
-if USE_S3:
+if USE_R2:
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": CLOUDFLARE_R2_BUCKET,
+            "endpoint_url": CLOUDFLARE_R2_ENDPOINT_URL,
+            "region_name": os.getenv("CLOUDFLARE_R2_REGION_NAME", "auto"),
+            "access_key": os.getenv(
+                "CLOUDFLARE_R2_ACCESS_KEY_ID", os.getenv("AWS_ACCESS_KEY_ID")
+            ),
+            "secret_key": os.getenv(
+                "CLOUDFLARE_R2_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY")
+            ),
+            "signature_version": "s3v4",
+            "addressing_style": os.getenv("CLOUDFLARE_R2_ADDRESSING_STYLE", "auto"),
+            "default_acl": None,
+            "querystring_auth": env_bool("CLOUDFLARE_R2_QUERYSTRING_AUTH", False),
+            "file_overwrite": False,
+            "location": os.getenv("CLOUDFLARE_R2_MEDIA_LOCATION", "media"),
+            "custom_domain": CLOUDFLARE_R2_CUSTOM_DOMAIN or None,
+        },
+    }
+elif USE_S3:
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {

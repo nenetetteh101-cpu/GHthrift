@@ -2,9 +2,12 @@
 # Deploy with: Render Dashboard -> New -> Blueprint -> select this repo.
 #
 # Notes:
+# - Uploaded photos can be stored on Cloudflare R2 by setting the
+#   CLOUDFLARE_R2_* variables in the Render dashboard. When they are present,
+#   R2 is used instead of local disk. Otherwise the disk below keeps media.
 # - The disk below requires a paid web service (Starter or higher). If you prefer
-#   free hosting, remove the disk block and configure S3 media storage instead
-#   (AWS_* variables), otherwise uploaded photos are lost on each deploy.
+#   free hosting, remove the disk block and configure Cloudflare R2 (or the
+#   AWS_* variables for S3), otherwise uploaded photos are lost on each deploy.
 # - Add your Paystack and email credentials in the Render dashboard. Variables
 #   marked sync: false are intentionally left blank.
 
@@ -43,6 +46,18 @@ services:
         value: "False"
       - key: MEDIA_ROOT
         value: /var/data/media
+      - key: CLOUDFLARE_R2_BUCKET
+        sync: false
+      - key: CLOUDFLARE_R2_ENDPOINT_URL
+        sync: false
+      - key: CLOUDFLARE_R2_ACCESS_KEY_ID
+        sync: false
+      - key: CLOUDFLARE_R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: CLOUDFLARE_R2_CUSTOM_DOMAIN
+        sync: false
+      - key: CLOUDFLARE_R2_MEDIA_LOCATION
+        value: media
       - key: PAYSTACK_ALLOW_MOCK
         value: "False"
       - key: DELIVERY_FEE

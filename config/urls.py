@@ -16,9 +16,9 @@ urlpatterns = [
     path("", include("core.urls")),
 ]
 
-# Serve uploaded media when it is stored on disk. On the VPS, nginx handles
-# /media/ before this fallback; on Render the persistent disk is served here.
-if not settings.USE_S3:
+# Serve uploaded media when it is stored on disk. With Cloudflare R2 (or S3)
+# the files are served from the bucket, so this fallback is disabled.
+if not settings.USE_REMOTE_MEDIA:
     urlpatterns += [
         re_path(
             r"^media/(?P<path>.*)$",
