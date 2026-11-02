@@ -15,7 +15,7 @@
   --radius: 16px;
   --radius-sm: 10px;
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --sans: "Montserrat", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
 * {
