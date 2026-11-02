@@ -1,15 +1,9 @@
+{% load static %}
 {% extends "base.html" %}
 
 {% block title %}Shop thrift dresses - GHthrift{% endblock %}
 
 {% block content %}
-{% load static %}
-<section class="section-tight">
-  <div class="container">
-    <form class="shop-search" method="get" action="{% url 'shop:product_list' %}"
-          hx-get="{% url 'shop:product_list' %}" hx-target="#product-results" hx-swap="outerHTML"
-          hx-trigger="submit, keyup changed delay:350ms from:input[name='q']"
-          hx-push-url="true" hx-indicator="#filter-loading">
       {% for field in form %}
         {% if field.name != "q" and field.value %}
           {{ field.as_hidden }}
