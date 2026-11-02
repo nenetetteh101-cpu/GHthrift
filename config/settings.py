@@ -168,7 +168,7 @@ MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
 # CLOUDFLARE_R2_BUCKET and CLOUDFLARE_R2_ENDPOINT_URL to enable it. Uploaded
 # images are pushed straight to R2 and served from the bucket's public URL.
 CLOUDFLARE_R2_BUCKET = os.getenv("CLOUDFLARE_R2_BUCKET", "")
-CLOUDFLARE_R2_ENDPOINT_URL = os.getenv("CLOUDFLARE_R2_ENDPOINT_URL", "")
+CLOUDFLARE_R2_ENDPOINT_URL = os.getenv("CLOUDFLARE_R2_ENDPOINT_URL", "").strip()
 CLOUDFLARE_R2_CUSTOM_DOMAIN = (
     os.getenv("CLOUDFLARE_R2_CUSTOM_DOMAIN", "")
     .removeprefix("https://")
