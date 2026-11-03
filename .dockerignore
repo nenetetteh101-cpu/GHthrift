@@ -1,0 +1,17 @@
+# Docker Ignore file for GHthrift
+__pycache__/
+*.py[cod]
+*.egg-info/
+/media/
+/staticfiles/
+*.log
+.env
+.env.*
+!.env.example
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
