@@ -24,7 +24,7 @@ services:
       DATABASE_URL: postgres://ghthrift:${POSTGRES_PASSWORD:-ghthrift_pass}@db:5432/ghthrift
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-django-insecure-dev-only-change-me}
       DJANGO_DEBUG: "True"
-      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0,web"
       PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY:-}
       PAYSTACK_PUBLIC_KEY: ${PAYSTACK_PUBLIC_KEY:-}
       CLOUDFLARE_R2_BUCKET: ${CLOUDFLARE_R2_BUCKET:-}
