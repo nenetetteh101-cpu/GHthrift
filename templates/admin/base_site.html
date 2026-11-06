@@ -24,18 +24,18 @@
       </a>
 
       <nav class="main-nav" aria-label="Admin navigation">
-        <a class="btn btn-small nav-btn" href="{% url 'admin:index' %}">Dashboard</a>
+        <a class="btn btn-small nav-btn" href="/admin/">Dashboard</a>
         {% if user.is_superuser %}
-          <a class="btn btn-small nav-btn" href="{% url 'admin:orders_order_changelist' %}">Orders</a>
-          <a class="btn btn-small nav-btn" href="{% url 'admin:shop_dress_changelist' %}">Products</a>
-          <a class="btn btn-small nav-btn" href="{% url 'admin:accounts_user_changelist' %}">Customers</a>
+          <a class="btn btn-small nav-btn" href="/admin/orders/order/">Orders</a>
+          <a class="btn btn-small nav-btn" href="/admin/shop/dress/">Products</a>
+          <a class="btn btn-small nav-btn" href="/admin/accounts/user/">Customers</a>
         {% endif %}
       </nav>
 
       <div class="header-actions">
         {% if user.is_authenticated %}
           <span class="account-link muted small">{{ user.get_username }}</span>
-          <form method="post" action="{% url 'admin:logout' %}" class="logout-form">
+          <form method="post" action="/admin/logout/" class="logout-form">
             {% csrf_token %}
             <button type="submit" class="btn btn-small btn-light">Log out</button>
           </form>
