@@ -12,6 +12,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Create and set working directory
 WORKDIR /app
 
+# Create a non-root user for running the app
+RUN groupadd -r ghthrift && useradd -r -g ghthrift -d /app -s /sbin/nologin ghthrift
+
 # Install Python dependencies first (leverages Docker cache)
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
@@ -21,6 +24,12 @@ COPY . .
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
+
+# Ensure the app user owns the app directory
+RUN chown -R ghthrift:ghthrift /app
+
+# Switch to the non-root user
+USER ghthrift
 
 # Expose the application port
 EXPOSE 8000
