@@ -1,13 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import user_passes_test
-from django.db.models import Count, Sum
+from django.db.models import Count, Max, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from decimal import Decimal, InvalidOperation
 
 from accounts.models import User
 from orders.models import Order
-from shop.models import Dress
+from shop.models import Dress, DressImage
 
 
 def staff_required(view_func):
@@ -237,7 +237,7 @@ def dress_add(request):
                     "occasion_choices": Dress.Occasion.choices,
                 },
             )
-        Dress.objects.create(
+        dress = Dress.objects.create(
             title=title,
             description=description,
             price=price_decimal,
@@ -251,6 +251,15 @@ def dress_add(request):
             is_featured=is_featured,
             seller=request.user,
         )
+        images = request.FILES.getlist("images")
+        for index, image_file in enumerate(images):
+            alt_text = request.POST.get(f"image_alt_{index}", "").strip() or image_file.name
+            DressImage.objects.create(
+                dress=dress,
+                image=image_file,
+                alt_text=alt_text,
+                position=index,
+            )
         return redirect("siteadmin:dresses")
     context = {
         "is_add": True,
@@ -292,6 +301,23 @@ def dress_edit(request, dress_id):
                 },
             )
         dress.save()
+        images = request.FILES.getlist("images")
+        for index, image_file in enumerate(images):
+            alt_text = request.POST.get(f"image_alt_{index}", "").strip() or image_file.name
+            max_position = (
+                DressImage.objects.filter(dress=dress).aggregate(
+                    max_pos=Max("position")
+                )["max_pos"]
+                or -1
+            )
+            DressImage.objects.create(
+                dress=dress,
+                image=image_file,
+                alt_text=alt_text,
+                position=max_position + 1 + index,
+            )
+        for image_id in request.POST.getlist("delete_image"):
+            DressImage.objects.filter(pk=image_id, dress=dress).delete()
         return redirect("siteadmin:dresses")
     context = {
         "is_add": False,

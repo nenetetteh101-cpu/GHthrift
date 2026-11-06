@@ -14,7 +14,7 @@
 {% endif %}
 
 <div class="form-card" style="max-width:640px;">
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-grid two-col">
       <div class="field">
@@ -65,6 +65,28 @@
         <label>Description</label>
         <textarea name="description" class="field-input" rows="4">{{ dress.description|default:'' }}</textarea>
       </div>
+    </div>
+
+    {% if not is_add and dress.images.all %}
+    <div class="field" style="margin-top:1rem;">
+      <label style="display:block;font-weight:600;color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.02em;margin-bottom:0.5rem;">Existing Images</label>
+      <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+        {% for image in dress.images.all %}
+        <div style="position:relative;width:120px;height:120px;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;">
+          <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <label style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,14,36,0.7);color:var(--white);font-size:0.7rem;padding:0.3rem;text-align:center;cursor:pointer;">
+            <input type="checkbox" name="delete_image" value="{{ image.id }}" style="margin-right:0.3rem;accent-color:var(--gold);"> Remove
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="field" style="margin-top:1rem;">
+      <label>Images (upload new)</label>
+      <input type="file" name="images" multiple accept="image/*" class="field-input">
+      <p style="color:var(--muted);font-size:0.76rem;margin:0.25rem 0 0;">Upload one or more dress photos. JPEG/PNG recommended.</p>
     </div>
 
     <div class="field" style="margin-top:1rem;">
