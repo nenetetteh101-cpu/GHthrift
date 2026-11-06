@@ -33,40 +33,6 @@
     {% endif %}
     
     {% block object-tools %}
-    {% if change and has_permission %}
-      {% if add %}
-        <ul class="object-tools">
-          <li>
-            <a class="button" href="{% url 'admin:app_label_model_add' %}" {% if has_add_permission %}title="{% translate 'Add' %}{% endif %}>{{ _add }}<!--
-          --></a>
-          </li>
-        </ul>
-      {% endif %}
-      {% if change %}
-        <ul class="object-tools">
-          {% if change_life %}
-            <li>
-              <a class="button" href="{{ change_life_url }}">{{ _change_life }}</a>
-            </li>
-          {% endif %}
-          {% if history %}
-            <li>
-              <a class="button" href="{% url 'admin:app_label_model_history' object.pk %}">{{ _history }}</a>
-            </li>
-          {% endif %}
-          {% if delete %}
-            <li>
-              <a class="button" href="{{ delete_url }}">{{ _delete }}</a>
-            </li>
-          {% endif %}
-          {% if save_as %}
-            <li>
-              <a class="button" href="{{ object_get_change_url }}">{{ _save_as }}</a>
-            </li>
-          {% endif %}
-        </ul>
-      {% endif %}
-    {% endif %}
     {% endblock %}
     
     {% block content %}
