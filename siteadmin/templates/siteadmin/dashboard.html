@@ -1,0 +1,120 @@
+{% extends "siteadmin/base.html" %}
+{% load static i18n %}
+
+{% block title %}Dashboard &bull; GHthrift Site Admin{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="muted">Overview of your store activity.</p>
+  </div>
+</div>
+
+<div class="value-grid">
+  <div class="value-card">
+    <h3>Total Orders</h3>
+    <p style="font-size:1.5rem;font-weight:700;color:var(--navy);margin:0;">{{ total_orders }}</p>
+  </div>
+  <div class="value-card">
+    <h3>Total Dresses</h3>
+    <p style="font-size:1.5rem;font-weight:700;color:var(--navy);margin:0;">{{ total_dresses }}</p>
+  </div>
+  <div class="value-card">
+    <h3>Total Users</h3>
+    <p style="font-size:1.5rem;font-weight:700;color:var(--navy);margin:0;">{{ total_users }}</p>
+  </div>
+  <div class="value-card">
+    <h3>Revenue (Paid)</h3>
+    <p style="font-size:1.5rem;font-weight:700;color:var(--navy);margin:0;">GHS {{ total_revenue }}</p>
+  </div>
+</div>
+
+<div class="section-head" style="margin-top:2rem;">
+  <h2>Recent Orders</h2>
+</div>
+<div class="form-card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Reference</th>
+        <th>Customer</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in recent_orders %}
+      <tr>
+        <td><a href="{% url 'siteadmin:order_detail' order.id %}" style="color:var(--navy);font-weight:600;">{{ order.reference }}</a></td>
+        <td>{{ order.user.get_username|default:order.shipping_name }}</td>
+        <td>
+          <span class="status status-{{ order.status }}">{{ order.get_status_display }}</span>
+        </td>
+        <td>GHS {{ order.total_price }}</td>
+        <td>{{ order.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" style="text-align:center;color:var(--muted);">No recent orders.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if low_stock %}
+<div class="section-head" style="margin-top:2rem;">
+  <h2>Low Stock Dresses</h2>
+</div>
+<div class="form-card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Size</th>
+        <th>Stock</th>
+        <th>Price</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dress in low_stock %}
+      <tr>
+        <td>{{ dress.title }}</td>
+        <td>{{ dress.size }}</td>
+        <td style="color:var(--navy);font-weight:700;">{{ dress.stock }}</td>
+        <td>GHS {{ dress.price }}</td>
+        <td>
+          <a href="{% url 'siteadmin:dress_edit' dress.id %}" class="btn btn-small btn-light">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if recent_dresses %}
+<div class="section-head" style="margin-top:2rem;">
+  <h2>Latest Dresses</h2>
+</div>
+<div class="product-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+  {% for dress in recent_dresses %}
+  <div class="product-card">
+    <div class="product-media" style="aspect-ratio:3/4;background:var(--sand);border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:0.8rem;">
+      {{ dress.title|truncatechars:18 }}
+    </div>
+    <div class="product-info" style="padding:0.8rem 0.1rem 0;">
+      <div class="product-title">{{ dress.title }}</div>
+      <div class="product-meta">{{ dress.size }} &middot; {{ dress.color }}</div>
+      <div class="price-row">
+        <span class="price">GHS {{ dress.price }}</span>
+        <span style="color:var(--muted);font-size:0.78rem;">{{ dress.stock }} in stock</span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

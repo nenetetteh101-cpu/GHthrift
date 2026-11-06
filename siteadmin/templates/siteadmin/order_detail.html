@@ -1,0 +1,101 @@
+{% extends "siteadmin/base.html" %}
+{% load static i18n %}
+
+{% block title %}Order {{ order.reference }} &bull; GHthrift Site Admin{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <div>
+    <h1>Order {{ order.reference }}</h1>
+    <p class="muted">Manage this order's details and status.</p>
+  </div>
+  <a href="{% url 'siteadmin:orders' %}" class="btn btn-small btn-light">Back to orders</a>
+</div>
+
+<div class="form-grid two-col" style="margin-top:1rem;">
+  <div class="form-card">
+    <h2>Order details</h2>
+    <div class="info-grid">
+      <div>
+        <h3 style="font-size:0.8rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.08em;margin-bottom:0.35rem;">Customer</h3>
+        <p>{{ order.user.get_username|default:order.shipping_name }}</p>
+        <p style="color:var(--muted);font-size:0.86rem;">{{ order.shipping_email|default:"—" }}</p>
+        <p style="color:var(--muted);font-size:0.86rem;">{{ order.shipping_phone|default:"—" }}</p>
+      </div>
+      <div>
+        <h3 style="font-size:0.8rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.08em;margin-bottom:0.35rem;">Shipping address</h3>
+        <p>{{ order.shipping_name }}</p>
+        <p>{{ order.shipping_address }}</p>
+        <p>{{ order.shipping_city }}, {{ order.shipping_region }}</p>
+      </div>
+      <div>
+        <h3 style="font-size:0.8rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.08em;margin-bottom:0.35rem;">Order summary</h3>
+        <p style="color:var(--muted);font-size:0.86rem;">Subtotal: GHS {{ order.subtotal }}</p>
+        <p style="color:var(--muted);font-size:0.86rem;">Delivery: GHS {{ order.delivery_fee }}</p>
+        <p style="color:var(--navy);font-weight:700;">Total: GHS {{ order.total_price }}</p>
+      </div>
+    </div>
+
+    <h3 style="font-size:0.8rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.08em;margin:1.5rem 0 0.5rem;">Items</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Dress</th>
+          <th>Size</th>
+          <th>Qty</th>
+          <th>Unit price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items.all %}
+        <tr>
+          <td>{{ item.title }}</td>
+          <td>{{ item.size|default:"—" }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>GHS {{ item.unit_price }}</td>
+          <td>GHS {{ item.line_total }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="text-align:center;color:var(--muted);">No items.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-card">
+    <h2>Status</h2>
+    <p style="color:var(--muted);font-size:0.86rem;margin-bottom:1rem;">Current: <strong style="color:var(--navy);">{{ order.get_status_display }}</strong></p>
+    <form method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label>New status</label>
+        <select name="status" class="field-input">
+          {% for code, label in status_choices %}
+          <option value="{{ code }}" {% if order.status == code %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn">Update status</button>
+    </form>
+
+    {% if order.delivery %}
+    <div style="margin-top:1.5rem;">
+      <h3 style="font-size:0.8rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.08em;margin-bottom:0.5rem;">Delivery</h3>
+      <p style="color:var(--muted);font-size:0.86rem;">Partner: {{ order.delivery.partner_name|default:"—" }}</p>
+      <p style="color:var(--muted);font-size:0.86rem;">Tracking: {{ order.delivery.tracking_number|default:"—" }}</p>
+      <p style="color:var(--muted);font-size:0.86rem;">Status: {{ order.delivery.get_status_display }}</p>
+    </div>
+    {% endif %}
+
+    <div style="margin-top:1.5rem;">
+      <h3 style="font-size:0.8rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.08em;margin-bottom:0.5rem;">Payments</h3>
+      {% for payment in order.payments.all %}
+      <p style="color:var(--muted);font-size:0.86rem;margin:0.25rem 0;">{{ payment.get_provider_display }}: {{ payment.get_status_display }}</p>
+      {% empty %}
+      <p style="color:var(--muted);font-size:0.86rem;">No payments recorded.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

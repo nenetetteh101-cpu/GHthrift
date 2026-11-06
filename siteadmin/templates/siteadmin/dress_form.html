@@ -1,0 +1,89 @@
+{% extends "siteadmin/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% if is_add %}Add Dress{% else %}Edit Dress{% endif %} &bull; GHthrift Site Admin{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <h1>{% if is_add %}Add Dress{% else %}Edit Dress{% endif %}</h1>
+  <a href="{% url 'siteadmin:dresses' %}" class="btn btn-small btn-light">Back to dresses</a>
+</div>
+
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+<div class="form-card" style="max-width:640px;">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-grid two-col">
+      <div class="field">
+        <label>Title</label>
+        <input type="text" name="title" class="field-input" required value="{{ dress.title|default:'' }}">
+      </div>
+      <div class="field">
+        <label>Price (GHS)</label>
+        <input type="text" name="price" class="field-input" required value="{{ dress.price|default:'' }}">
+      </div>
+      <div class="field">
+        <label>Size</label>
+        <select name="size" class="field-input">
+          {% for code, label in size_choices %}
+          <option value="{{ code }}" {% if dress.size == code %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>Color</label>
+        <input type="text" name="color" class="field-input" value="{{ dress.color|default:'' }}">
+      </div>
+      <div class="field">
+        <label>Style</label>
+        <input type="text" name="style" class="field-input" placeholder="e.g. wrap, midi, bodycon" value="{{ dress.style|default:'' }}">
+      </div>
+      <div class="field">
+        <label>Condition</label>
+        <select name="condition" class="field-input">
+          {% for code, label in condition_choices %}
+          <option value="{{ code }}" {% if dress.condition == code %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>Occasion</label>
+        <select name="occasion" class="field-input">
+          {% for code, label in occasion_choices %}
+          <option value="{{ code }}" {% if dress.occasion == code %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>Stock</label>
+        <input type="number" name="stock" class="field-input" value="{{ dress.stock|default:1 }}" min="0">
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea name="description" class="field-input" rows="4">{{ dress.description|default:'' }}</textarea>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:1rem;">
+      <label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.02em;">
+        <input type="checkbox" name="is_available" {% if dress.is_available %}checked{% endif %}>
+        Available for purchase
+      </label>
+    </div>
+    <div class="field" style="margin-top:0.5rem;">
+      <label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.02em;">
+        <input type="checkbox" name="is_featured" {% if dress.is_featured %}checked{% endif %}>
+        Featured on homepage
+      </label>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <button type="submit" class="btn">{% if is_add %}Create Dress{% else %}Save Dress{% endif %}</button>
+      <a href="{% url 'siteadmin:dresses' %}" class="btn btn-small btn-light" style="margin-left:0.7rem;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+from django.apps import AppConfig
+
+
+class SiteadminConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "siteadmin"
+    verbose_name = "GHthrift Site Admin"

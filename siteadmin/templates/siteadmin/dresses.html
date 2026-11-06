@@ -1,0 +1,52 @@
+{% extends "siteadmin/base.html" %}
+{% load static i18n %}
+
+{% block title %}Dresses &bull; GHthrift Site Admin{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <div>
+    <h1>Dresses</h1>
+    <p class="muted">Manage your dress catalogue.</p>
+  </div>
+  <a href="{% url 'siteadmin:dress_add' %}" class="btn">Add Dress</a>
+</div>
+
+<div class="product-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;">
+  {% for dress in dresses %}
+  <div class="product-card">
+    <div class="product-media" style="aspect-ratio:3/4;background:var(--sand);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;position:relative;">
+      {% if dress.primary_image %}
+      <img src="{{ dress.primary_image.image.url }}" alt="{{ dress.title }}" style="width:100%;height:100%;object-fit:cover;">
+      {% else %}
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:0.85rem;">No image</div>
+      {% endif %}
+      {% if not dress.is_available %}
+      <span class="product-badge sold">Sold out</span>
+      {% endif %}
+    </div>
+    <div class="product-info" style="padding:0.8rem 0.1rem 0;">
+      <div class="product-title">{{ dress.title }}</div>
+      <div class="product-meta">{{ dress.size }} &middot; {{ dress.color }} &middot; {{ dress.condition }}</div>
+      <div class="price-row">
+        <span class="price">GHS {{ dress.price }}</span>
+        <span style="color:var(--muted);font-size:0.78rem;">{{ dress.stock }} in stock</span>
+      </div>
+    </div>
+    <div style="margin-top:0.8rem;display:flex;gap:0.4rem;">
+      <a href="{% url 'siteadmin:dress_edit' dress.id %}" class="btn btn-small btn-light" style="flex:1;">Edit</a>
+      <form method="post" action="{% url 'siteadmin:dress_delete' dress.id %}" style="flex:1;display:inline;" onsubmit="return confirm('Delete this dress?')">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-small" style="background:var(--navy);color:var(--white);">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty-state">
+    <h3>No dresses yet</h3>
+    <p style="color:var(--muted);margin:0.5rem 0 0;">Add your first dress to start selling.</p>
+    <a href="{% url 'siteadmin:dress_add' %}" class="btn" style="margin-top:1rem;">Add Dress</a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

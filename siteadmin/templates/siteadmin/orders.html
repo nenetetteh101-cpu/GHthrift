@@ -1,0 +1,72 @@
+{% extends "siteadmin/base.html" %}
+{% load static i18n %}
+
+{% block title %}Orders &bull; GHthrift Site Admin{% endblock %}
+
+{% block content %}
+<div class="section-head">
+  <div>
+    <h1>Orders</h1>
+    <p class="muted">Track and manage customer orders.</p>
+  </div>
+</div>
+
+<div class="filter-grid" style="margin-bottom:1.5rem;">
+  <form method="get" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:end;">
+    <label style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.02em;margin-bottom:0;">Status</label>
+    <select name="status" class="field-input" style="width:auto;padding:0.62rem 0.75rem;font-size:0.9rem;">
+      <option value="" {% if not status_filter %}selected{% endif %}>All statuses</option>
+      {% for code, label in status_choices %}
+      <option value="{{ code }}" {% if status_filter == code %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-small">Filter</button>
+    {% if status_filter %}
+    <a href="{% url 'siteadmin:orders' %}" class="btn btn-small btn-light">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+<div class="form-card">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Reference</th>
+        <th>Customer</th>
+        <th>Status</th>
+        <th>Payment</th>
+        <th>Total</th>
+        <th>Date</th>
+        <th style="width:120px;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>
+          <a href="{% url 'siteadmin:order_detail' order.id %}" style="color:var(--navy);font-weight:600;">{{ order.reference }}</a>
+        </td>
+        <td>{{ order.user.get_username|default:order.shipping_name }}</td>
+        <td>
+          <span class="status status-{{ order.status }}">{{ order.get_status_display }}</span>
+        </td>
+        <td>
+          {% for p in order.payments.all %}
+          <span style="font-size:0.78rem;">{{ p.get_provider_display }}: {{ p.get_status_display }}</span><br>
+          {% empty %}
+          <span style="color:var(--muted);font-size:0.78rem;">—</span>
+          {% endfor %}
+        </td>
+        <td>GHS {{ order.total_price }}</td>
+        <td>{{ order.created_at|date:"M d, Y" }}</td>
+        <td>
+          <a href="{% url 'siteadmin:order_detail' order.id %}" class="btn btn-small btn-light">View</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="text-align:center;color:var(--muted);">No orders found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

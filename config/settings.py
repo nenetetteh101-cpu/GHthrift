@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "shop",
     "cart",
     "orders",
+    "siteadmin",
 ]
 
 MIDDLEWARE = [
