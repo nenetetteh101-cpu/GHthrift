@@ -37,6 +37,11 @@ class DressAdmin(admin.ModelAdmin):
     @admin.action(description="Mark selected dresses unavailable")
     def mark_unavailable(self, request, queryset):
         queryset.update(is_available=False)
+    
+    class Media:
+        css = {
+            "all": ("css/admin.css",)
+        }
 
 
 @admin.register(DressImage)
