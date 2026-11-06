@@ -6,50 +6,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ site_header }} Administration{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}GHthrift Administration{% endblock %}">
+  <meta name="theme-color" content="#000e24">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
-  <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
-  <link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
-  <link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
-  <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
-  <link rel="stylesheet" href="{% static 'admin/css/changelists.css' %}">
-  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <script src="{% static 'js/htmx.min.js' %}" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
-<body>
-  {% block breadcrumbs %}
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol>
-        {% for item in breadcrumbs %}
-          <li><a href="{{ item.url }}">{{ item.title }}</a></li>
-        {% endfor %}
-      </ol>
-    </nav>
-  </div>
-  {% endblock %}
-  
-  {% block colleft %}{% endblock %}
-  {% block colright %}{% endblock %}
-  
-  <div{% block bodyclass %} class="admin-body"{% endblock %}>
-    {% if is_popup %}
-    <input type="hidden" id="{{ object_id }}"/>
-    {% endif %}
-    
-    {% block object-tools %}
-    {% endblock %}
-    
-    {% block content %}
-    {% endblock %}
-  </div>
-  
-  {% block footer %}
-  <div class="container">
-    <p>{% translate "Powered by Django" %} &bull; {% translate "GHthrift" %}</p>
-  </div>
-  {% endblock %}
-  
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="{% block body_class %}admin-page{% endblock %}">
+  <div class="announcement">Nationwide delivery across Ghana &middot; Pay with Mobile Money or card</div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand brand-logo" href="{% url 'admin:index' %}" aria-label="GHthrift admin home">
+        <img src="{% static 'img/logo.png' %}" alt="GHthrift" width="48" height="48">
+      </a>
+
+      <nav class="main-nav" aria-label="Admin navigation">
+        <a class="btn btn-small nav-btn" href="{% url 'admin:index' %}">Dashboard</a>
+        {% if user.is_superuser %}
+          <a class="btn btn-small nav-btn" href="{% url 'admin:orders_order_changelist' %}">Orders</a>
+          <a class="btn btn-small nav-btn" href="{% url 'admin:shop_dress_changelist' %}">Products</a>
+          <a class="btn btn-small nav-btn" href="{% url 'admin:accounts_user_changelist' %}">Customers</a>
+        {% endif %}
+      </nav>
+
+      <div class="header-actions">
+        {% if user.is_authenticated %}
+          <span class="account-link muted small">{{ user.get_username }}</span>
+          <form method="post" action="{% url 'admin:logout' %}" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-small btn-light">Log out</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="container messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main>
+    <div class="container">
+      {% block breadcrumbs %}
+      <nav aria-label="breadcrumb" class="section-head" style="margin-bottom: 1rem;">
+        <ol style="display:flex;gap:0.5rem;padding:0;margin:0;list-style:none;color:var(--muted);font-size:0.86rem;">
+          {% for item in breadcrumbs %}
+            <li>{% if not forlast %}<a href="{{ item.url }}" style="color:var(--ink);text-decoration:none;opacity:0.9;">{{ item.title }}</a><span style="opacity:0.4;">/</span>{% else %}<span style="color:var(--ink);font-weight:600;">{{ item.title }}</span>{% endif %}</li>
+          {% endfor %}
+        </ol>
+      </nav>
+      {% endblock %}
+
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <p>&copy; {% now "Y" %} GHthrift. Made in Ghana.</p>
+      <p>Secure admin &middot; GHthrift</p>
+    </div>
+  </footer>
+
   {% block extra_js %}{% endblock %}
 </body>
 </html>
