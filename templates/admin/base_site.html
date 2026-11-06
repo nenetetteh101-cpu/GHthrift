@@ -29,7 +29,7 @@
   
   <div{% block bodyclass %} class="admin-body"{% endblock %}>
     {% if is_popup %}
-    <input type="hidden" opId"{% escape to_variable popup_opener_object_name %}" id="{{ object_id }}"/>
+    <input type="hidden" id="{{ object_id }}"/>
     {% endif %}
     
     {% block object-tools %}
