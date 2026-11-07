@@ -15,6 +15,11 @@ class UserAdmin(BaseUserAdmin):
     list_display = ("username", "email", "get_full_name", "phone", "is_staff", "date_joined")
     search_fields = ("username", "email", "first_name", "last_name", "phone")
     inlines = [AddressInline]
+    
+    class Media:
+        css = {
+            "all": ("css/admin.css",)
+        }
 
 
 @admin.register(SocialIdentity)

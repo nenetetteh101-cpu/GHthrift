@@ -1,0 +1,84 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site_header }} Administration{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}GHthrift Administration{% endblock %}">
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  {% block breadcrumbs %}
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol>
+        {% for item in breadcrumbs %}
+          <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+        {% endfor %}
+      </ol>
+    </nav>
+  </div>
+  {% endblock %}
+  
+  {% block colleft %}{% endblock %}
+  {% block colright %}{% endblock %}
+  
+  <div{% block bodyclass %} class="admin-body"{% endblock %}>
+    {% if is_popup %}
+    <input type="hidden" opId"{% escape to_variable popup_opener_object_name %}" id="{{ object_id }}"/>
+    {% endif %}
+    
+    {% block object-tools %}
+    {% if change and has_permission %}
+      {% if add %}
+        <ul class="object-tools">
+          <li>
+            <a class="button" href="{% url 'admin:app_label_model_add' %}" {% if has_add_permission %}title="{% translate 'Add' %}{% endif %}>{{ _add }}<!--
+          --></a>
+          </li>
+        </ul>
+      {% endif %}
+      {% if change %}
+        <ul class="object-tools">
+          {% if change_life %}
+            <li>
+              <a class="button" href="{{ change_life_url }}">{{ _change_life }}</a>
+            </li>
+          {% endif %}
+          {% if history %}
+            <li>
+              <a class="button" href="{% url 'admin:app_label_model_history' object.pk %}">{{ _history }}</a>
+            </li>
+          {% endif %}
+          {% if delete %}
+            <li>
+              <a class="button" href="{{ delete_url }}">{{ _delete }}</a>
+            </li>
+          {% endif %}
+          {% if save_as %}
+            <li>
+              <a class="button" href="{{ object_get_change_url }}">{{ _save_as }}</a>
+            </li>
+          {% endif %}
+        </ul>
+      {% endif %}
+    {% endif %}
+    {% endblock %}
+    
+    {% block content %}
+    {% endblock %}
+  </div>
+  
+  {% block footer %}
+  <div class="container">
+    <p>{% translate "Powered by Django" %} &bull; {% translate "GHthrift" %}</p>
+  </div>
+  {% endblock %}
+  
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

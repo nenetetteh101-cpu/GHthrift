@@ -1,0 +1,397 @@
+/* Admin Panel Styling - Matches GHthrift Website */
+
+/* CSS Variables (matching website) */
+:root {
+  --ink: #000e24;
+  --muted: #55627a;
+  --paper: #f5f8fd;
+  --sand: #e5f0ff33;
+  --sand-deep: #dbe8f8;
+  --navy: #000e24;
+  --navy-deep: #00142f;
+  --ice: #e5f0ff;
+  --ice-soft: #e5f0ff33;
+  --gold: #f1ba0a;
+  --white: #ffffff;
+  --line: #dbe5f2;
+  --shadow: 0 18px 45px rgba(0, 14, 36, 0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: "Montserrat", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+/* Admin Body */
+.admin-body {
+  font-family: var(--sans) !important;
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  line-height: 1.5;
+}
+
+/* Branding Area */
+#branding {
+  background: var(--navy) !important;
+  color: var(--ice) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+#branding h1 {
+  font-family: var(--serif) !important;
+  font-weight: 700 !important;
+  font-size: 1.5rem !important;
+}
+
+#branding h1 a {
+  color: var(--ice) !important;
+  text-decoration: none;
+}
+
+/* User tools and header */
+#user-tools {
+  background: var(--navy-deep) !important;
+  color: var(--ice) !important;
+}
+
+#header {
+  background: var(--navy) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+/* Sidebar Navigation */
+#nav-sidebar {
+  background: var(--navy-deep) !important;
+}
+
+#nav-sidebar a {
+  color: var(--ice) !important;
+  font-size: 0.85rem !important;
+}
+
+#nav-sidebar a:hover {
+  background: var(--ice-soft) !important;
+  color: var(--ink) !important;
+}
+
+#nav-sidebar .current a {
+  background: var(--navy) !important;
+  color: var(--ice) !important;
+}
+
+/* Search box */
+#search-box {
+  background: var(--navy-deep) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ice) !important;
+}
+
+/* Main content area */
+#main {
+  background: var(--paper) !important;
+}
+
+/* Action menus */
+#action-menu {
+  background: var(--navy) !important;
+  border-color: var(--line) !important;
+}
+
+/* Pagination */
+.pagination {
+  justify-content: flex-start;
+  margin: 1rem 0;
+}
+
+.page-links {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.page-links a,
+.page-links span {
+  background: var(--white) !important;
+  color: var(--ink) !important;
+  margin: 0 2px;
+  border: 1px solid var(--line) !important;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+
+.page-links a.active,
+.page-links span.current {
+  background: var(--navy) !important;
+  color: var(--ice) !important;
+  border-color: var(--navy) !important;
+}
+
+/* Table styles - for changelist */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.admin-table th {
+  background: var(--navy) !important;
+  color: var(--ice) !important;
+  padding: 10px;
+  border: 1px solid var(--line) !important;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.admin-table td {
+  padding: 10px;
+  border: 1px solid var(--line);
+  background: var(--white) !important;
+  color: var(--ink) !important;
+  font-size: 0.85rem;
+}
+
+.admin-table tbody tr:hover td {
+  background: var(--sand-deep) !important;
+}
+
+/* Related links */
+.module-h2, .module-h3 {
+  color: var(--muted) !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Empty results */
+#empty-content {
+  padding: 3rem;
+  text-align: center;
+  color: var(--muted) !important;
+  background: var(--white) !important;
+  margin: 2rem 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* Form errors */
+.field.errors {
+  border-color: #e28686 !important;
+}
+
+.form-error {
+  color: #e28686 !important;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+
+/* Buttons */
+.button, .submit-row .object-tools a.button,
+.save, .save_as, .delete {
+  background: var(--navy) !important;
+  color: var(--ice) !important;
+  border: 1px solid var(--navy) !important;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.button:hover, .button:focus, .submit-row .object-tools a.button:hover,
+.save:hover, .save_as:hover, .delete:hover {
+  background: var(--navy-deep) !important;
+  color: var(--ice) !important;
+}
+
+.button.add, .addlink {
+  background: var(--gold) !important;
+  color: var(--navy-deep) !important;
+  border: 1px solid var(--gold) !important;
+}
+
+.button.add:hover, .addlink:hover {
+  background: #e6a600 !important;
+  color: var(--navy-deep) !important;
+}
+
+/* Save buttons */
+.save, .save_as {
+  background: var(--gold) !important;
+  color: var(--navy-deep) !important;
+  border: 1px solid var(--gold) !important;
+}
+
+.save:hover, .save_as:hover {
+  background: #e6a600 !important;
+}
+
+/* Delete button */
+.delete {
+  background: #e28686 !important;
+  color: var(--white) !important;
+  border: 1px solid #e28686 !important;
+}
+
+.delete:hover {
+  background: #e16b6b !important;
+}
+
+/* Message styles */
+.message {
+  padding: 0.8rem 1rem;
+  margin: 1rem 0;
+  border-radius: var(--radius-sm);
+}
+
+.message.success {
+  background: var(--ice-soft) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+}
+
+.message.error {
+  background: #fddede !important;
+  border: 1px solid #f28e8e !important;
+  color: var(--ink) !important;
+}
+
+.message.warning {
+  background: #fdf3cd !important;
+  border: 1px solid #e6d569 !important;
+  color: var(--ink) !important;
+}
+
+/* Top bar actions */
+.form-top-bar {
+  background: var(--navy) !important;
+  padding: 1rem;
+  margin: -1rem -1rem 1rem -1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--ice) !important;
+}
+
+.form-top-bar h2 {
+  margin: 0;
+  color: var(--ice) !important;
+  font-size: 1rem;
+}
+
+/* Form row actions */
+.row-actions {
+  margin: 0 -1rem 1rem -1rem;
+  padding: 0.5rem 1rem;
+  background: var(--paper) !important;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.formset-row {
+  border-top: 1px solid var(--line);
+  padding: 0.5rem 0;
+}
+
+/* Related objects */
+#related-widget-wrapper {
+  background: var(--white) !important;
+  border: 1px solid var(--line) !important;
+  padding: 1rem;
+}
+
+#related-widget-wrapper h2 {
+  color: var(--navy) !important;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Inline inlines */
+.inline-related {
+  background: var(--paper) !important;
+  border: 1px solid var(--line) !important;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+/* User model specific */
+.user .password1, .user .password2 {
+  background: var(--sand) !important;
+  border: 1px solid var(--line) !important;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: var(--radius-sm);
+}
+
+/* Vertical filter sidebar */
+#filter-bar {
+  background: var(--navy-deep) !important;
+  padding: 1rem;
+}
+
+#filter-bar h2 {
+  color: var(--ice) !important;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Checkboxes and radios */
+.form-row .field.charfield,
+.form-row .field.emailfield,
+.form-row .field.urlfield {
+  background: var(--white) !important;
+}
+
+/* Bottom navigation */
+.bottom-nav {
+  background: var(--navy) !important;
+  color: var(--ice) !important;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+/* Brand footer */
+#branding-footer {
+  background: var(--navy-deep) !important;
+  color: var(--ice) !important;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+/* Quick links */
+.module-group {
+  margin: 1rem 0;
+}
+
+.module-group h3 {
+  color: var(--muted) !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+  background: var(--navy) !important;
+  color: var(--ice) !important;
+  border-radius: var(--radius-sm) 0 0 0;
+}
+
+/* Tablet and mobile adjustments */
+@media (max-width: 768px) {
+  .admin-body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .admin-table th, .admin-table td {
+    padding: 6px !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .button, .save, .delete {
+    padding: 4px 8px !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .page-links a, .page-links span {
+    padding: 3px 6px !important;
+    font-size: 0.75rem !important;
+  }
+}

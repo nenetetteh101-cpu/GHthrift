@@ -2,21 +2,20 @@
 Django settings for GHthrift.
 
 Configuration is environment-driven so the same codebase can run locally,
-on Render, or on an InterServer VPS. See .env.example for the available
-variables.
+on Render, or on an InterServer VPS. Environment variables are set
+via docker-compose.yml.
 """
 
 import os
 from pathlib import Path
 
-import dj_database_url
-from dotenv import load_dotenv
+# No load_dotenv - using environment variables directly from docker-compose.yml
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")
 
 
 def env_bool(name, default=False):
+    """Read boolean environment variable."""
     value = os.getenv(name)
     if value is None:
         return default
@@ -24,18 +23,20 @@ def env_bool(name, default=False):
 
 
 def env_list(name, default=""):
-    raw = os.getenv(name, default)
-    return [item.strip() for item in raw.split(",") if item.strip()]
+    """Read comma-separated environment variable as list."""
+    value = os.getenv(name, default)
+    return [item.strip() for item in value.replace(' ', ',').split(',') if item.strip()]
 
 
 # ---------------------------------------------------------------------------
 # Core
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-dev-only-change-me")
+
 DEBUG = env_bool("DJANGO_DEBUG", True)
 
 RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
-ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,199.231.191.243")
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "199.231.191.243,localhost,127.0.0.1,web")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 if not DEBUG and "*" in ALLOWED_HOSTS:
@@ -107,7 +108,7 @@ ASGI_APPLICATION = "config.asgi.application"
 # ---------------------------------------------------------------------------
 DATABASES = {
     "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        default=f"postgres://ghthrift:ghthrift_pass@db:5432/ghthrift",
         conn_max_age=600,
     )
 }
@@ -163,6 +164,9 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
+
+# Whitenoise for serving static files in production
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # Cloudflare R2 is S3-compatible and is the preferred media backend. Set
 # CLOUDFLARE_R2_BUCKET and CLOUDFLARE_R2_ENDPOINT_URL to enable it. Uploaded

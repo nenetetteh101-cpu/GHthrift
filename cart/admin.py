@@ -1,21 +1,30 @@
 from django.contrib import admin
 
-from .models import Cart, CartItem
+from .models import Order, OrderItem
 
 
-class CartItemInline(admin.TabularInline):
-    model = CartItem
+class OrderItemInline(admin.StackedInline):
+    model = OrderItem
     extra = 0
+    raw_id_fields = ["dress"]
+    verbose_name = "Cart Item"
+    verbose_name_plural = "Cart Items"
 
 
-@admin.register(Cart)
-class CartAdmin(admin.ModelAdmin):
-    list_display = ("__str__", "user", "session_key", "updated_at")
-    search_fields = ("user__username", "session_key")
-    inlines = [CartItemInline]
-
-
-@admin.register(CartItem)
-class CartItemAdmin(admin.ModelAdmin):
-    list_display = ("cart", "dress", "quantity", "added_at")
-    search_fields = ("dress__title",)
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = (
+        "cart",
+        "user",
+        "status",
+        "total_price",
+        "created_at",
+    )
+    list_filter = ("status",)
+    search_fields = ("cart_id", "user__username", "user__email")
+    inlines = [OrderItemInline]
+    
+    class Media:
+        css = {
+            "all": ("css/admin.css",)
+        }
