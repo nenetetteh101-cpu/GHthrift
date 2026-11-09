@@ -31,6 +31,22 @@
         {% endif %}
       </nav>
 
+      <details class="mobile-nav">
+        <summary class="btn btn-small" aria-label="Open admin menu">Menu</summary>
+        <div class="mobile-nav-panel">
+          <a class="btn btn-small btn-block" href="{% url 'siteadmin:dashboard' %}">Dashboard</a>
+          <a class="btn btn-small btn-block" href="{% url 'siteadmin:orders' %}">Orders</a>
+          <a class="btn btn-small btn-block" href="{% url 'siteadmin:dresses' %}">Dresses</a>
+          {% if user.is_superuser %}
+            <a class="btn btn-small btn-block" href="{% url 'siteadmin:users' %}">Users</a>
+          {% endif %}
+          <form method="post" action="{% url 'siteadmin:logout' %}" class="logout-form" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-small btn-block btn-light">Log out</button>
+          </form>
+        </div>
+      </details>
+
       <div class="header-actions">
         {% if user.is_authenticated %}
           <span class="account-link muted small">{{ user.get_username }}</span>
