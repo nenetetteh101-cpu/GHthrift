@@ -49,6 +49,7 @@
           {% else %}
             <a class="btn btn-small wishlist-btn" href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">&#9825; Save to wishlist</a>
           {% endif %}
+          {% include "shop/partials/share_button.html" with dress=dress %}
         </div>
       {% else %}
         <div class="detail-actions">
@@ -56,6 +57,7 @@
           {% if user.is_authenticated %}
             {% include "shop/partials/wishlist_button.html" %}
           {% endif %}
+          {% include "shop/partials/share_button.html" with dress=dress %}
         </div>
       {% endif %}
 
